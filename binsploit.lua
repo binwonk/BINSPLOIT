@@ -52,6 +52,22 @@
 
 	local spells = require(game.ReplicatedStorage.Modules.Spell)
 
+	local wands = {}
+
+	local wandModule = require(game.ReplicatedStorage.Modules.Wand)
+
+	local Outfits = {}
+
+	local outfitsModule = require(game.ReplicatedStorage.Modules.Outfits)
+
+	for i,v in pairs(outfitsModule.Outfits) do
+		table.insert(Outfits, v.Name)
+	end
+
+	for i,v in pairs(wandModule.Wands) do
+		table.insert(wands, v.Name)
+	end
+
 	_G.plrCFrame = plr.Character.HumanoidRootPart.CFrame
 
 	if game.StarterPlayer.StarterCharacter.Humanoid.UseJumpPower == true then
@@ -626,6 +642,56 @@
 			if teleport == "Duelling Arena" then
 				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-757.25238, -107.285576, -469.765472)
 			end
+		end
+	})
+
+	ROWizard:AddDropdown({
+		Name = "Buy Wand (Requires 1 Gem)",
+		Default = "",
+		Options = wands,
+		Callback = function(wand)
+			local args = {
+				[1] = "Buy",
+				[2] = {
+					["Data"] = {
+						["Type"] = "Wand",
+						["Rarity"] = "Common",
+						["Gems"] = 1,
+						["Owner"] = game:GetService("Players").LocalPlayer,
+						["LastFired"] = {},
+						["Name"] = wand,
+						["Logs"] = {},
+						["IdleAnimation"] = "WandIdle2"
+					},
+					["Type"] = "Gems"
+				}
+			}
+
+			game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+		end
+	})
+
+	ROWizard:AddDropdown({
+		Name = "Buy Outfit (Requires 1 gem)",
+		Default = "",
+		Options = Outfits,
+		Callback = function(outfit)
+			local args = {
+				[1] = "Buy",
+				[2] = {
+					["Data"] = {
+						["HouseColor"] = true,
+						["Name"] = outfit,
+						["Owner"] = game:GetService("Players").LocalPlayer,
+						["OutfitName"] = "ScarfUniform",
+						["Gems"] = 1,
+						["Type"] = "Outfit",
+						["Rarity"] = "Common"
+					},
+					["Type"] = "Gems"
+				}
+			}
+			game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
 		end
 	})
 
