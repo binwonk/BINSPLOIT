@@ -614,6 +614,28 @@
 	})
 
 	ROWizard:AddDropdown({
+		Name = "Select Wand (requires wand to be purchased)",
+		Default = "",
+		Options = wands,
+		Callback = function(freeWand)
+			local args = {
+				[1] = "Equip",
+				[2] = {
+					["Type"] = "Wand",
+					["Rarity"] = "Common",
+					["Gems"] = 0,
+					["Owner"] = game:GetService("Players").LocalPlayer,
+					["LastFired"] = {},
+					["Name"] = freeWand,
+					["Logs"] = {},
+					["IdleAnimation"] = "WandIdle"
+				}
+			}
+			game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+		end
+	})
+
+	ROWizard:AddDropdown({
 		Name = "Teleports",
 		Default = "",
 		Options = {"Grand Hall", "Serpents", "Lions", "Badgers", "Ravens", "Library", "Potions", "Duelling Arena"},
