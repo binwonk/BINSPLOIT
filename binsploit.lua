@@ -499,6 +499,16 @@ Universal:AddToggle({
 	Callback = function(lagswitchtoggle)
 		_G.LagswitchStatus = lagswitchtoggle
 		lagswitch()
+	end,
+})
+
+Universal:AddBind({
+	Name = "Lagswitch Keybind",
+	Default = Enum.KeyCode.K,
+	Hold = false,
+	Callback = function()
+		_G.LagswitchStatus = not _G.LagswitchStatus
+		lagswitch()
 	end
 })
 
@@ -520,7 +530,7 @@ local GotoPlayer = ""
 Universal:AddTextbox({
 	Name = "Goto Player",
 	Default = "",
-	TextDisappear = false,
+	TextDisappear = true,
 	Callback = function(PlayerGoto)
 		for i,v in pairs(game.Players:GetChildren()) do
 			if (string.sub(string.lower(v.Name), 1, string.len(PlayerGoto))) == string.lower(PlayerGoto) then
