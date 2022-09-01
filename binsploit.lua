@@ -41,7 +41,7 @@
 	folder.Name = ""
 
 	local cdelay = 1
-	local chatmessage = "Using Binsploit V4, Server: 4PUwnJ46yj"
+	local chatmessage = "Want to raise your IQ by math.huge? Use Binsploit V4 today! Join the server at .gg/4PUwnJ46yj"
 
 	local vim = game:GetService("VirtualInputManager")
 	local uis = game:GetService("UserInputService")
@@ -296,7 +296,7 @@
 
 	Universal:AddTextbox({
 		Name = "Chat Spam Message",
-		Default = "using binsploit v4",
+		Default = "Message Here",
 		TextDisappear = true,
 		Callback = function(msg)
 			chatmessage = msg
@@ -733,3 +733,25 @@
 	})
 
 	OrionLib:Init()
+
+	ROWizard:AddTextbox({
+		Name = "Kill Player (WORK IN PROGRESS)",
+		Default = "",
+		TextDisappear = true,
+		Callback = function(KillPlayer)
+			for i = 1,6 do
+				local args = {
+					[1] = "HandleDamage",
+					[2] = {
+						["Character"] = game:GetService("Players")[KillPlayer].Character,
+						["Hit"] = game:GetService("Players")[KillPlayer].Character.RightHand,
+						["Type"] = "Normal",
+						["Norm"] = Vector3.new(0.7755845785140991, 0.035323500633239746, -0.6302545070648193),
+						["Pos"] = Vector3.new(-731.4620971679688, -108.57284545898438, -495.60650634765625),
+						["SpellName"] = "stupefy"
+					}
+				}
+				game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+			end
+		end
+	})
