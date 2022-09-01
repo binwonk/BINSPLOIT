@@ -50,6 +50,8 @@
 
 	local mouse = plr:GetMouse()
 
+
+	if game.PlaceId == 3082707367 then
 	local spells = require(game.ReplicatedStorage.Modules.Spell)
 
 	local wands = {}
@@ -68,15 +70,26 @@
 		table.insert(wands, v.Name)
 	end
 
-	_G.plrCFrame = plr.Character.HumanoidRootPart.CFrame
+	defaultJP = 50
+end
 
-	if game.StarterPlayer.StarterCharacter.Humanoid.UseJumpPower == true then
-		jumppowerused = true
-		defaultJP = 50
-	else
-		jumppowerused = false
-		defaultJP = 7.2
+	if game.StarterPlayer:FindFirstChild("StarterCharacter") then
+		if game.StarterPlayer.StarterCharacter.Humanoid.UseJumpPower == true then
+			defaultJP = 50
+		else
+			defaultJP = 7.2
+		end
 	end
+
+	if game.Players.LocalPlayer:FindFirstChild("Character") then
+		if game.Players.LocalPlayer.Character.Humanoid.UseJumpPower == true then
+			defaultJP = 50
+		else
+			defaultJP = 7.2
+		end
+	end
+
+	_G.plrCFrame = plr.Character.HumanoidRootPart.CFrame
 
 	local function addOutline(player)
 		local Highlight = Instance.new("Highlight", folder)
