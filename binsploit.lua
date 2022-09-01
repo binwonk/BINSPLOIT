@@ -31,7 +31,7 @@
 
 	local plr = game.Players.LocalPlayer
 
-	local CFRAME_SET = plr.Character.HumanoidRootPart.CFrame
+	local CFRAME_SET = nil
 
 	local jumppowerused = false
 	local defaultJP = 7.2
@@ -71,25 +71,29 @@
 	end
 
 	defaultJP = 50
-end
+	end
 
 	if game.StarterPlayer:FindFirstChild("StarterCharacter") then
 		if game.StarterPlayer.StarterCharacter.Humanoid.UseJumpPower == true then
 			defaultJP = 50
+			jumppowerused = true
 		else
 			defaultJP = 7.2
+			jumppowerused = false
+		end
+	else
+		if game.Players.LocalPlayer:FindFirstChild("Character") then
+			if game.Players.LocalPlayer.Character.UseJumpPower == true then
+				defaultJP = 50
+				jumppowerused = true
+			else
+				defaultJP = 7.2
+				jumppowerused = false
+			end
 		end
 	end
 
-	if game.Players.LocalPlayer:FindFirstChild("Character") then
-		if game.Players.LocalPlayer.Character.Humanoid.UseJumpPower == true then
-			defaultJP = 50
-		else
-			defaultJP = 7.2
-		end
-	end
-
-	_G.plrCFrame = plr.Character.HumanoidRootPart.CFrame
+	_G.plrCFrame = nil
 
 	local function addOutline(player)
 		local Highlight = Instance.new("Highlight", folder)
@@ -196,7 +200,7 @@ end
 		Increment = 1,
 		ValueName = "JumpPower",
 		Callback = function(jp)
-			if plr.Character.Humanoid.UseJumpPower == true then
+			if jumppowerused == true then
 				plr.Character.Humanoid.JumpPower = jp
 			else
 				plr.Character.Humanoid.JumpHeight = jp
@@ -209,7 +213,7 @@ end
 		Default = "",
 		TextDisappear = true,
 		Callback = function(customjp)
-			if plr.Character.Humanoid.UseJumpPower == true then
+			if jumppowerused == true then
 				plr.Character.Humanoid.JumpPower = customjp
 			else
 				plr.Character.Humanoid.JumpHeight = customjp
