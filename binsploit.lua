@@ -732,8 +732,6 @@
 		end
 	})
 
-	OrionLib:Init()
-
 	ROWizard:AddTextbox({
 		Name = "Kill Player (WORK IN PROGRESS)",
 		Default = "",
@@ -755,3 +753,18 @@
 			end
 		end
 	})
+
+	local OtherScripts = BINSPLOIT:MakeTab({
+		Name = "Other Scripts",
+		Icon = "rbxassetid://4483345998",
+		PremiumOnly = false
+	})
+
+	OtherScripts:AddButton({
+		Name = "Infinite Yield",
+		Callback = function()
+			loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
+		end
+	})
+
+	OrionLib:Init()
