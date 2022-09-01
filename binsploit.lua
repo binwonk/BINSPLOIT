@@ -52,25 +52,23 @@
 
 
 	if game.PlaceId == 3082707367 then
-	local spells = require(game.ReplicatedStorage.Modules.Spell)
+	_G.ROWizardSpells = require(game.ReplicatedStorage.Modules.Spell)
 
-	local wands = {}
+	_G.ROWizardwands = {}
 
-	local wandModule = require(game.ReplicatedStorage.Modules.Wand)
+	_G.ROWizardwandModule = require(game.ReplicatedStorage.Modules.Wand)
 
-	local Outfits = {}
+	_G.ROWizardOutfits = {}
 
-	local outfitsModule = require(game.ReplicatedStorage.Modules.Outfits)
+	_G.ROWizardoutfitsModule = require(game.ReplicatedStorage.Modules.Outfits)
 
-	for i,v in pairs(outfitsModule.Outfits) do
-		table.insert(Outfits, v.Name)
+	for i,v in pairs(_G.ROWizardoutfitsModule.Outfits) do
+		table.insert(_G.ROWizardOutfits, v.Name)
 	end
 
-	for i,v in pairs(wandModule.Wands) do
-		table.insert(wands, v.Name)
+	for i,v in pairs(_G.ROWizardwandModule.Wands) do
+		table.insert(_G.ROWizardwands, v.Name)
 	end
-
-	defaultJP = 50
 	end
 
 	if game.StarterPlayer:FindFirstChild("StarterCharacter") then
@@ -574,7 +572,7 @@
 	ROWizard:AddButton({
 		Name = "Mod Wand (BETTER THAN BLISSFUL)",
 		Callback = function()
-			for i,v in pairs(spells.Spells) do
+			for i,v in pairs(_G.ROWizardSpells.Spells) do
 				v.MaxCharges = 10000
 				v.Charges = 10000
 				v.Range = 10000
@@ -585,7 +583,7 @@
 				end
 				
 			while wait() do
-				for i,v in pairs(spells.Spells) do
+				for i,v in pairs(_G.ROWizardSpells.Spells) do
 					if v.MaxCharges < 100 then
 						v.MaxCharges = 10000
 					end
@@ -633,7 +631,7 @@
 	ROWizard:AddDropdown({
 		Name = "Select Wand (requires wand to be purchased)",
 		Default = "",
-		Options = wands,
+		Options = _G.ROWizardwands,
 		Callback = function(freeWand)
 			local args = {
 				[1] = "Equip",
@@ -687,7 +685,7 @@
 	ROWizard:AddDropdown({
 		Name = "Buy Wand (Requires 1 Gem)",
 		Default = "",
-		Options = wands,
+		Options = _G.ROWizardwands,
 		Callback = function(wand)
 			local args = {
 				[1] = "Buy",
@@ -713,7 +711,7 @@
 	ROWizard:AddDropdown({
 		Name = "Buy Outfit (Requires 1 gem)",
 		Default = "",
-		Options = Outfits,
+		Options = _G.ROWizardOutfits,
 		Callback = function(outfit)
 			local args = {
 				[1] = "Buy",
