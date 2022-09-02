@@ -81,7 +81,7 @@ if game.StarterPlayer:FindFirstChild("StarterCharacter") then
 	end
 else
 	if game.Players.LocalPlayer:FindFirstChild("Character") then
-		if game.Players.LocalPlayer.Character.UseJumpPower == true then
+		if game.Players.LocalPlayer.Character.Humanoid.UseJumpPower == true then
 			defaultJP = 50
 			jumppowerused = true
 		else
@@ -142,6 +142,9 @@ game:GetService("Players").PlayerAdded:Connect(function(p)
 	end)
 end)
 
+if game.PlaceId == 2788229376 then
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploit2.lua", true))()
+end
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
