@@ -1,3 +1,5 @@
+local ScriptVersion = "v1.0.0"
+
 _G.ESPEnabled = false
 _G.ChatSpam = false
 _G.AutoClicker = false
@@ -146,7 +148,29 @@ if game.PlaceId == 2788229376 then
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploit2.lua", true))()
 end
 
+wait(0.1)
+
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploitVersion.lua", true))()
+wait()
+local currentVersion = _G.CurrentVersion
+		if ScriptVersion == currentVersion then
+			OrionLib:MakeNotification({
+				Name = "Script Version",
+				Content = "Script is up to date. Using " .. ScriptVersion,
+				Image = "rbxassetid://4483345998",
+				Time = 5
+			})
+		end
+		if ScriptVersion ~= currentVersion then
+			OrionLib:MakeNotification({
+				Name = "Script Version",
+				Content = "Script is outdated. Your version: " .. ScriptVersion .. ". Newest version: " .. currentVersion,
+				Image = "rbxassetid://4483345998",
+				Time = 5
+			})
+		end
 
 OrionLib:MakeNotification({
 	Name = "hi",
@@ -203,7 +227,8 @@ Universal:AddSlider({
 	Callback = function(jp)
 		if jumppowerused == true then
 			plr.Character.Humanoid.JumpPower = jp
-		else
+		end
+		if jumppowerused == false then
 			plr.Character.Humanoid.JumpHeight = jp
 		end
 	end
@@ -541,6 +566,46 @@ Universal:AddTextbox({
 			end
 		end
 		plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[GotoPlayer].Character.HumanoidRootPart.Position)
+	end
+})
+
+Universal:AddButton({
+	Name = "ChatSpy",
+	Callback = function()
+		local chatFrame = plr.PlayerGui.Chat.Frame
+		chatFrame.ChatChannelParentFrame.Visible = true
+	end
+})
+
+Universal:AddButton({
+	Name = "Check Version",
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploitVersion.lua", true))()
+		wait()
+		currentVersion = _G.CurrentVersion
+		if ScriptVersion == currentVersion then
+			OrionLib:MakeNotification({
+				Name = "Script Version",
+				Content = "Script is up to date. Using " .. ScriptVersion,
+				Image = "rbxassetid://4483345998",
+				Time = 5
+			})
+		end
+		if ScriptVersion ~= currentVersion then
+			OrionLib:MakeNotification({
+				Name = "Script Version",
+				Content = "Script is outdated. Your version: " .. ScriptVersion .. ". Newest version: " .. currentVersion,
+				Image = "rbxassetid://4483345998",
+				Time = 5
+			})
+		end
+	end
+})
+
+Universal:AddButton({
+	Name = "Get Latest Version",
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploit.lua", true))()
 	end
 })
 
