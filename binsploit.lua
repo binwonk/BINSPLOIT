@@ -145,14 +145,14 @@ game:GetService("Players").PlayerAdded:Connect(function(p)
 end)
 
 if game.PlaceId == 2788229376 then
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploit2.lua", true))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploit2.lua"))()
 end
 
 wait(0.1)
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploitVersion.lua", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploitVersion.lua"))()
 wait()
 local currentVersion = _G.CurrentVersion
 		if ScriptVersion == currentVersion then
@@ -580,7 +580,7 @@ Universal:AddButton({
 Universal:AddButton({
 	Name = "Check Version",
 	Callback = function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploitVersion.lua", true))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploitVersion.lua"))()
 		wait()
 		currentVersion = _G.CurrentVersion
 		if ScriptVersion == currentVersion then
