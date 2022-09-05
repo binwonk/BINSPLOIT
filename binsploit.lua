@@ -76,7 +76,7 @@ for i,v in pairs(_G.ROWizardwandModule.Wands) do
 	table.insert(_G.ROWizardwands, v.Name)
 end
 
-for i,v inp pairs(_G.ROWizardBroomModule.Brooms) do
+for i,v in pairs(_G.ROWizardBroomModule.Brooms) do
 table.insert(_G.ROWizardBrooms, v.Name)
 end
 end
