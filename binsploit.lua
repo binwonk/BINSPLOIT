@@ -1,4 +1,4 @@
-local ScriptVersion = "v1.0.0"
+⁹local ScriptVersion = "v1.0.0"
 
 _G.ESPEnabled = false
 _G.ChatSpam = false
@@ -836,8 +836,8 @@ ROWizard:AddDropdown({
 
 ROWizard:AddDropdown({
 Name = "Buy Broom (costs 1 gem)",
-Default = ""
-Options = _G.ROWizardBrooms
+Default = "",
+Options = _G.ROWizardBrooms,
 Callback = function(broom)
 local args = {
     [1] = "Buy",
@@ -858,6 +858,7 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+end
 })
 
 local targetplr = ""
