@@ -1,4 +1,4 @@
-⁹local ScriptVersion = "v1.0.0"
+local ScriptVersion = "v1.0.0"
 
 _G.ESPEnabled = false
 _G.ChatSpam = false
