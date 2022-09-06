@@ -713,7 +713,7 @@ ROWizard:AddDropdown({
 				["Name"] = "School Uniform",
 				["Owner"] = game:GetService("Players").LocalPlayer,
 				["OutfitName"] = outfit,
-				["Gems"] = 0,
+				["Gems"] = 1,
 				["Type"] = "Outfit",
 				["Rarity"] = "Common"
 			}
@@ -732,7 +732,7 @@ ROWizard:AddDropdown({
 			[2] = {
 				["Type"] = "Wand",
 				["Rarity"] = "Common",
-				["Gems"] = 0,
+				["Gems"] = 1,
 				["Owner"] = game:GetService("Players").LocalPlayer,
 				["LastFired"] = {},
 				["Name"] = freeWand,
