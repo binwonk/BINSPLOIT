@@ -35,8 +35,8 @@ local plr = game.Players.LocalPlayer
 
 local CFRAME_SET = nil
 
-local jumppowerused = false
-local defaultJP = 7.2
+local jumppowerused = true
+local defaultJP = 50
 
 local storage = {}
 local folder = Instance.new("Folder", game:GetService("CoreGui"))
@@ -73,25 +73,7 @@ for i,v in pairs(_G.ROWizardwandModule.Wands) do
 end
 end
 
-if game.StarterPlayer:FindFirstChild("StarterCharacter") then
-	if game.StarterPlayer.StarterCharacter.Humanoid.UseJumpPower == true then
-		defaultJP = 50
-		jumppowerused = true
-	else
-		defaultJP = 7.2
-		jumppowerused = false
-	end
-else
-	if game.Players.LocalPlayer:FindFirstChild("Character") then
-		if game.Players.LocalPlayer.Character.Humanoid.UseJumpPower == true then
-			defaultJP = 50
-			jumppowerused = true
-		else
-			defaultJP = 7.2
-			jumppowerused = false
-		end
-	end
-end
+game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = true
 
 _G.plrCFrame = nil
 
@@ -152,18 +134,23 @@ local function kickAttempt(Player, Reason)
     print("Kick Attempted for:", Reason)
 end
 
-hookfunction(plr.Kick, kickAttempt)
+local mt = getrawmetatable(game)
+local old = mt.__namecall
 
-local __namecall
-__namecall = hookmetamethod(game, "__namecall", function(self, ...)
-    local args = {...}
-    local method = getnamecallmethod()
-    if (self == plr and (method == "kick" or "Kick")) then
-        kickAttempt(self, args[1])
-        return
+setreadonly(mt, false)
+
+mt.__namecall = newcclosure(function(self, ...)
+  	local args = {...}
+	local method = getnamecallmethod()
+ 
+	if method == "Kick" or method == "kick" then
+	kickAttempt(self, args[1])
+    return
     end
-    return __namecall(self, ...)
+
+    return old(self, ...)
 end)
+setreadonly(mt, true)
 
 if game.PlaceId == 1962086868 then
 	if game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("LocalScript2") then
@@ -566,16 +553,24 @@ Universal:AddBind({
 	end
 })
 
-Universal:AddToggle({
+Universal:AddToggle({ -- noclip kinda skidded from infinite yield xddd
 	Name = "Noclip (still not finished) (doesnt work)",
 	Default = false,
 	Callback = function(noclip)
-		local OldState = plr.Character.Humanoid:GetState()
+		print("Noclip is: " .. tostring(noclip))
 		while noclip do
-			plr.Character.Humanoid:ChangeState(11)
+			for i,v in pairs(plr.Character:GetDescendants()) do
+				if v:IsA("BasePart") and v.CanCollide == true and v.Name ~= floatName then
+					v.CanCollide = false
+				end
+			end
 			wait()
 		end
-		plr.Character.Humanoid:ChangeState(OldState)
+		for i,v in pairs(plr.Character:GetDescendants()) do
+			if v:IsA("BasePart") and v.CanCollide == false and v.Name ~= floatName then
+				v.CanCollide = true
+			end
+		end
 	end
 })
 
