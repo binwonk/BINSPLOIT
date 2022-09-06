@@ -553,27 +553,6 @@ Universal:AddBind({
 	end
 })
 
-Universal:AddToggle({ -- noclip kinda skidded from infinite yield xddd
-	Name = "Noclip (still not finished) (doesnt work)",
-	Default = false,
-	Callback = function(noclip)
-		print("Noclip is: " .. tostring(noclip))
-		while noclip do
-			for i,v in pairs(plr.Character:GetDescendants()) do
-				if v:IsA("BasePart") and v.CanCollide == true and v.Name ~= floatName then
-					v.CanCollide = false
-				end
-			end
-			wait()
-		end
-		for i,v in pairs(plr.Character:GetDescendants()) do
-			if v:IsA("BasePart") and v.CanCollide == false and v.Name ~= floatName then
-				v.CanCollide = true
-			end
-		end
-	end
-})
-
 local GotoPlayer = ""
 
 Universal:AddTextbox({
@@ -864,7 +843,7 @@ ROWizard:AddTextbox({
 				[1] = "HandleDamage",
 				[2] = {
 					["Character"] = game:GetService("Players")[targetplr].Character,
-					["Hit"] = game:GetService("Players")[targetplr].Character.RightHand,
+					["Hit"] = game:GetService("Players")[targetplr].Character.LeftHand,
 					["Type"] = "Normal",
 					["Norm"] = Vector3.new(0.7755845785140991, 0.035323500633239746, -0.6302545070648193),
 					["Pos"] = Vector3.new(-731.4620971679688, -108.57284545898438, -495.60650634765625),
