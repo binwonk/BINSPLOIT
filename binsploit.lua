@@ -1,4 +1,4 @@
-local ScriptVersion = "v1.0.0"
+local ScriptVersion = "v1.0.01"
 
 _G.ESPEnabled = false
 _G.ChatSpam = false
@@ -64,20 +64,12 @@ _G.ROWizardOutfits = {}
 
 _G.ROWizardoutfitsModule = require(game.ReplicatedStorage.Modules.Outfits)
 
-_G.ROWizardBrooms = {}
-
-_G.ROWizardBroomModule = require(game.ReplicatedStorage.Modules.Broomstick)
-
 for i,v in pairs(_G.ROWizardoutfitsModule.Outfits) do
 	table.insert(_G.ROWizardOutfits, v.Name)
 end
 
 for i,v in pairs(_G.ROWizardwandModule.Wands) do
 	table.insert(_G.ROWizardwands, v.Name)
-end
-
-for i,v in pairs(_G.ROWizardBroomModule.Brooms) do
-table.insert(_G.ROWizardBrooms, v.Name)
 end
 end
 
@@ -154,6 +146,28 @@ end)
 
 if game.PlaceId == 2788229376 then
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploit2.lua"))()
+end
+
+local function kickAttempt(Player, Reason)
+    print("Kick Attempted for:", Reason)
+end
+
+hookfunction(plr.Kick, kickAttempt)
+
+local __namecall
+__namecall = hookmetamethod(game, "__namecall", function(self, ...)
+    local args = {...}
+    local method = getnamecallmethod()
+    if (self == plr and (method == "kick" or "Kick")) then
+        kickAttempt(self, args[1])
+        return
+    end
+    return __namecall(self, ...)
+end)
+
+if game.PlaceId == 1962086868 then
+	game:GetService("Players").LocalPlayer.PlayerScripts.LocalScript2:Destroy()
+	game:GetService("Players").LocalPlayer.PlayerScripts.LocalScript:Destroy()
 end
 
 wait(0.1)
@@ -834,33 +848,6 @@ ROWizard:AddDropdown({
 	end
 })
 
-ROWizard:AddDropdown({
-Name = "Buy Broom (costs 1 gem)",
-Default = "",
-Options = _G.ROWizardBrooms,
-Callback = function(broom)
-local args = {
-    [1] = "Buy",
-    [2] = {
-        ["Data"] = {
-            ["Type"] = "Broom",
-            ["Rarity"] = "Rare",
-            ["Active"] = true,
-            ["Gems"] = 1,
-            ["Handling"] = 20,
-            ["Name"] = broom,
-            ["Speed"] = 120,
-            ["Points"] = 200,
-            ["Owner"] = game:GetService("Players").LocalPlayer
-        },
-        ["Type"] = "Gems"
-    }
-}
-
-game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
-end
-})
-
 local targetplr = ""
 
 ROWizard:AddTextbox({
@@ -889,6 +876,31 @@ ROWizard:AddTextbox({
 		end
 	end
 })
+
+local TOH = BINSPLOIT:MakeTab({
+	Name = "Tower of Hell",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+TOH:AddButton({
+	Name = "TP To Finish",
+	Callback = function()
+		plr.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").tower.finishes:GetChildren()[1].CFrame
+	end
+})
+
+TOH:AddButton({
+	Name = "Delete Kill Parts",
+	Callback = function()
+		for i,v in pairs(game:GetService("Workspace").tower:GetDescendants()) do
+			if v:IsA("BoolValue") and v.Name == "kills" then
+				v.Parent:Destroy()
+			end
+		end
+	end
+})
+
 
 local OtherScripts = BINSPLOIT:MakeTab({
 	Name = "Other Scripts",
