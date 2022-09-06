@@ -166,8 +166,12 @@ __namecall = hookmetamethod(game, "__namecall", function(self, ...)
 end)
 
 if game.PlaceId == 1962086868 then
-	game:GetService("Players").LocalPlayer.PlayerScripts.LocalScript2:Destroy()
-	game:GetService("Players").LocalPlayer.PlayerScripts.LocalScript:Destroy()
+	if game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("LocalScript2") then
+		game:GetService("Players").LocalPlayer.PlayerScripts.LocalScript2:Destroy()
+	end
+	if game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("LocalScript") then
+		game:GetService("Players").LocalPlayer.PlayerScripts.LocalScript:Destroy()
+	end
 end
 
 wait(0.1)
