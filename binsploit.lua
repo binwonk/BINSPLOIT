@@ -87,7 +87,6 @@ _G.plrCFrame = nil
 
 local function addOutline(player)
 	local Highlight = Instance.new("Highlight", folder)
-
 	Highlight.OutlineColor = outlinecoloring
 	Highlight.Adornee = player
 
@@ -100,25 +99,6 @@ local function addOutline(player)
 end
 
 local function AddNameTag(player)
-	local BGui = Instance.new("BillboardGui", Folder)
-	local Frame = Instance.new("Frame", BGui)
-	local TextLabel = Instance.new("TextLabel", Frame)
-
-	BGui.Adornee = player:WaitForChild("Head")
-	BGui.StudsOffset = Vector3.new(0, 3, 0)
-	BGui.AlwaysOnTop = true
-
-	BGui.Size = UDim2.new(4, 0, 0.5, 0)
-	Frame.Size = UDim2.new(1, 0, 1, 0)
-	TextLabel.Size = UDim2.new(1, 0, 1, 0)
-
-	Frame.BackgroundTransparency = 1
-	TextLabel.BackgroundTransparency = 1
-
-	TextLabel.Text = player.Name
-	TextLabel.Font = textfont
-	TextLabel.TextColor3 = namecolor
-	TextLabel.TextScaled = namepositioning
 end
 
 game:GetService("Players").PlayerAdded:Connect(function(p)
@@ -268,8 +248,12 @@ Universal:AddTextbox({
 	end
 })
 
-Universal:AddButton({
-	Name = "ESP (uses highlights) (broken) (rewriting)",
+local ESPSection = Universal:AddSection({
+	Name = "ESP"
+})
+
+ESPSection:AddButton({
+	Name = "ESP (uses highlights) (sometimes doenst work)",
 	Callback = function()
 		_G.ESPEnabled = true
 		for i,v in pairs(players:GetPlayers()) do
@@ -292,6 +276,22 @@ Universal:AddButton({
 				end
 			end
 		end
+	end
+})
+
+ESPSection:AddColorpicker({
+	Name = "ESP Outline Colour (do this first)",
+	Default = outlinecoloring,
+	Callback = function(CIKIY)
+		outlinecoloring = CIKIY
+	end
+})
+
+ESPSection:AddColorpicker({
+	Name = "ESP Fill Colour (do this first)",
+	Default = fillcoloring,
+	Callback = function(maongus)
+		fillcoloring = maongus
 	end
 })
 
