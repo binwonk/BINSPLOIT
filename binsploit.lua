@@ -64,12 +64,20 @@ _G.ROWizardOutfits = {}
 
 _G.ROWizardoutfitsModule = require(game.ReplicatedStorage.Modules.Outfits)
 
+_G.ROWizardBrooms = {}
+
+_G.ROWizardBroomModule = require(game.ReplicatedStorage.Modules.Broomstick)
+
 for i,v in pairs(_G.ROWizardoutfitsModule.Outfits) do
 	table.insert(_G.ROWizardOutfits, v.Name)
 end
 
 for i,v in pairs(_G.ROWizardwandModule.Wands) do
 	table.insert(_G.ROWizardwands, v.Name)
+end
+
+for i,v in pairs(_G.ROWizardBroomModule.Brooms) do
+	table.insert(_G.ROWizardBrooms, v.Name)
 end
 end
 
@@ -818,6 +826,32 @@ ROWizard:AddDropdown({
 					["Gems"] = 1,
 					["Type"] = "Outfit",
 					["Rarity"] = "Common"
+				},
+				["Type"] = "Gems"
+			}
+		}
+		game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+	end
+})
+
+ROWizard:AddDropdown({
+	Name = "Buy Broom (Requires 1 Gem)",
+	Default = "",
+	Options = _G.ROWizardBrooms,
+	Callback = function(broom)
+		local args = {
+			[1] = "Buy",
+			[2] = {
+				["Data"] = {
+					["Type"] = "Broom",
+					["Rarity"] = "Rare",
+					["Active"] = true,
+					["Gems"] = 1,
+					["Handling"] = 20,
+					["Name"] = broom,
+					["Speed"] = 120,
+					["Points"] = 200,
+					["Owner"] = game:GetService("Players").LocalPlayer
 				},
 				["Type"] = "Gems"
 			}
