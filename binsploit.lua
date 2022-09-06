@@ -795,7 +795,7 @@ ROWizard:AddDropdown({
 				["Data"] = {
 					["Type"] = "Wand",
 					["Rarity"] = "Common",
-					["Gems"] = 1,
+					["Gems"] = 0.000000001,
 					["Owner"] = game:GetService("Players").LocalPlayer,
 					["LastFired"] = {},
 					["Name"] = wand,
@@ -823,7 +823,7 @@ ROWizard:AddDropdown({
 					["Name"] = outfit,
 					["Owner"] = game:GetService("Players").LocalPlayer,
 					["OutfitName"] = "ScarfUniform",
-					["Gems"] = 1,
+					["Gems"] = 0.000000001,
 					["Type"] = "Outfit",
 					["Rarity"] = "Common"
 				},
@@ -846,7 +846,7 @@ ROWizard:AddDropdown({
 					["Type"] = "Broom",
 					["Rarity"] = "Rare",
 					["Active"] = true,
-					["Gems"] = 1,
+					["Gems"] = 0.000000001,
 					["Handling"] = 20,
 					["Name"] = broom,
 					["Speed"] = 120,
