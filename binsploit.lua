@@ -613,7 +613,7 @@ Universal:AddButton({
 Universal:AddButton({
 	Name = "Get Latest Version",
 	Callback = function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploit.lua", true))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploit.lua"))()
 	end
 })
 
