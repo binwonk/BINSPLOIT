@@ -79,6 +79,9 @@ end
 for i,v in pairs(_G.ROWizardBroomModule.Brooms) do
 	table.insert(_G.ROWizardBrooms, v.Name)
 end
+
+ROWizardShake = require(game.ReplicatedStorage.Modules.CameraShaker)
+
 end
 
 game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = true
@@ -681,7 +684,8 @@ ROWizard:AddButton({
 			v.Safe = true
 			v.ChargeCooldown = 0.01
 			v.Cooldown = 0
-			v.ShakeIntensity = 0
+			hookfunction(ROWizardShake.Shake, function(...)
+			end)
 			end
 			
 		while wait() do
@@ -700,9 +704,6 @@ ROWizard:AddButton({
 				end
 				if v.ChargeCooldown > 0.02 then
 					v.ChargeCooldown = 0.01
-				end
-				if v.ShakeIntensity > 0.1 then
-					v.ShakeIntensity = 0
 				end
 			end
 		end
