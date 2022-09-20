@@ -1,11 +1,12 @@
-local ScriptVersion = "v1.0.01"
+local ScriptVersion = "v1.0.02"
 
 _G.ESPEnabled = false
 _G.ChatSpam = false
 _G.AutoClicker = false
 _G.MouseToClick = false
 _G.AutoClickerDelay = 0
-_G.HitboxSize = 20
+_G.HitboxSize = 5
+_G.Hitboxes = false
 _G.HitboxColor = Color3.fromRGB(0, 0, 255)
 _G.AntiAfk = false
 _G.LagswitchStatus = false
@@ -31,7 +32,10 @@ local namepositioning = true
 
 local ts = game:GetService("TeleportService")
 
+local players = game:GetService("Players")
 local plr = game.Players.LocalPlayer
+
+local rs = game:GetService("RunService")
 
 local CFRAME_SET = nil
 
@@ -43,7 +47,7 @@ local folder = Instance.new("Folder", game:GetService("CoreGui"))
 folder.Name = ""
 
 local cdelay = 1
-local chatmessage = "Want to raise your IQ by math.huge? Use Binsploit V4 today! Join the server at .gg/4PUwnJ46yj"
+local chatmessage = "Use Binsploit V4 // .gg/4PUwnJ46yj"
 
 local vim = game:GetService("VirtualInputManager")
 local uis = game:GetService("UserInputService")
@@ -84,7 +88,11 @@ ROWizardShake = require(game.ReplicatedStorage.Modules.CameraShaker)
 
 end
 
-game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = true
+if game.PlaceId ~= 286090429 then
+	game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = true
+else
+	game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = false
+end
 
 _G.plrCFrame = nil
 
@@ -119,6 +127,10 @@ end)
 
 if game.PlaceId == 2788229376 then
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploit2.lua"))()
+end
+
+if game.PlaceId == 286090429 then
+	defaultJP = 3.2
 end
 
 local function kickAttempt(Player, Reason)
@@ -238,18 +250,23 @@ Universal:AddSlider({
 	end
 })
 
+if game.PlaceId ~= 286090429 then
 Universal:AddTextbox({
 	Name = "Custom Jumppower",
 	Default = "",
 	TextDisappear = true,
 	Callback = function(customjp)
+		if game.PlaceId == 286090429 then
 		if jumppowerused == true then
 			plr.Character.Humanoid.JumpPower = customjp
 		else
 			plr.Character.Humanoid.JumpHeight = customjp
 		end
 	end
+
+	end
 })
+end
 
 local ESPSection = Universal:AddSection({
 	Name = "ESP"
@@ -361,6 +378,8 @@ Universal:AddTextbox({
 	end
 })
 
+chatmessage = "Use Binsploit V4 Today! .gg/4PUwnJ46yj"
+
 Universal:AddTextbox({
 	Name = "Chat Spam Delay",
 	Default = "1",
@@ -372,9 +391,21 @@ Universal:AddTextbox({
 
 local function chatSpamFunction()
 while _G.ChatSpam do
+	if game.PlaceId ~= 286090429 then
 	local args = {[1] = chatmessage, [2] = "All"}
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
 	wait(cdelay)
+	else
+		local args = {
+			[1] = "Hah!",
+			[2] = chatmessage,
+			[3] = false,
+			[5] = false,
+			[6] = true
+		}
+		game:GetService("ReplicatedStorage").Events.PlayerChatted:FireServer(unpack(args))
+		wait(cdelay)
+	end
 end
 end
 
@@ -456,15 +487,15 @@ AutoClickerSection:AddBind({
 	end
 })
 
-local function addhitboxes()
-	for i,v in pairs(game:GetService("Players"):GetPlayers()) do
-		if v.Name ~= plr.Name then
+local function addhitbox(player)
+	if _G.Hitboxes == true then
+		if player.Name ~= plr.Name then
 			pcall(function()
-			v.Character.HumanoidRootPart.Size = Vector3.new(_G.HitboxSize, _G.HitboxSize, _G.HitboxSize)
-			v.Character.HumanoidRootPart.Transparency = 0.7
-			v.Character.HumanoidRootPart.Color = _G.HitboxColor
-			v.Character.HumanoidRootPart.Material = "Neon"
-			v.Character.HumanoidRootPart.CanCollide = false
+			player.Character.HumanoidRootPart.Size = Vector3.new(_G.HitboxSize, _G.HitboxSize, _G.HitboxSize)
+			player.Character.HumanoidRootPart.Transparency = 0.7
+			player.Character.HumanoidRootPart.Color = _G.HitboxColor
+			player.Character.HumanoidRootPart.Material = "Neon"
+			player.Character.HumanoidRootPart.CanCollide = false
 			end)
 		end
 	end
@@ -484,6 +515,68 @@ local function removehitboxes()
 	end
 end
 
+if game.PlaceId == 286090429 then
+	originalSizes = {LowerTorso=plr.Character.LowerTorso.Size,HumanoidRootPart=plr.Character.HumanoidRootPart.Size,HeadHB=plr.Character.HeadHB.Size}
+else
+	originalSizes = {HumanoidRootPart=plr.Character.HumanoidRootPart.Size}
+end
+
+local isVisible = true
+
+if isVisible then
+	isVisible = 0.7
+else
+	isVisible = 1
+end
+
+local bighead = true -- im lazy so arsenal hitboxes are skidded lol
+
+function hitboxupdate(player)
+	if not player or not player.Character then return end
+	if game.PlaceId == 286090429 then
+		if _G.Hitboxes and player ~= plr and player.Status.Team.Value ~= plr.Status.Team.Value then
+			--[[ if bighead ~= true then
+				player.Character.LowerTorso.Size = Vector3.new(_G.HitboxSize,_G.HitboxSize,_G.HitboxSize)
+				player.Character.LowerTorso.Transparency = isVisible
+			else
+				print("hi")
+			end ]]
+			--[[ player.Character.HumanoidRootPart.Size = Vector3.new(size,size,size)
+			player.Character.HumanoidRootPart.Transparency = isVisible ]]
+	else
+			--[[ player.Character.LowerTorso.Size = originalSizes.LowerTorso
+			player.Character.HumanoidRootPart.Size = originalSizes.HumanoidRootPart ]]
+	end
+else
+	if _G.Hitboxes and player ~= plr and (player.Character:FindFirstChild("HumanoidRootPart") or player.Character:WaitForChild("HumanoidRootPart")) then
+		player.Character.HumanoidRootPart.Size = Vector3.new(_G.HitboxSize, _G.HitboxSize, _G.HitboxSize)
+		player.Character.HumanoidRootPart.Transparency = 0.7
+		player.Character.HumanoidRootPart.Color = _G.HitboxColor
+		player.Character.HumanoidRootPart.Material = "Neon"
+		player.Character.HumanoidRootPart.CanCollide = false
+	else
+		player.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+		player.Character.HumanoidRootPart.Transparency = 1
+		player.Character.HumanoidRootPart.BrickColor = BrickColor.new("Medium stone grey")
+		player.Character.HumanoidRootPart.Material = "Plastic"
+		player.Character.HumanoidRootPart.CanCollide = true
+	end
+end
+end
+
+
+function onjoin(player)
+	if player then player = game.Players[player.Name] else return end
+	if game.PlaceId == 286090429 then
+	player.Status.Team:GetPropertyChangedSignal("Value"):Connect(function()
+		hitboxupdate(player)
+	end)
+	hitboxupdate(player)
+else
+	hitboxupdate(player)
+end
+end
+
 local HitboxSection = Universal:AddSection({
 	Name = "Hitboxes"
 })
@@ -493,11 +586,33 @@ HitboxSection:AddToggle({
 	Default = false,
 	Callback = function(hitboxes)
 		if hitboxes == true then
-			addhitboxes()
-		else
-			removehitboxes()
+			_G.Hitboxes = true
+			for i,v in pairs(game:GetService("Players"):GetChildren()) do
+				if game.PlaceId == 286090429 then
+				v.Status.Team:GetPropertyChangedSignal("Value"):Connect(function()
+					if v == game.Players.LocalPlayer then
+						for x,b in pairs(game:GetService("Players"):GetChildren()) do
+							if b ~= game.Players.LocalPlayer then
+								hitboxupdate(b)
+							end
+						end
+					else
+						hitboxupdate(v)
+					end
+				end)
+				if v ~= game.Players.LocalPlayer then
+					hitboxupdate(v)
+				end
+			else
+				if v ~= game.Players.LocalPlayer then
+					hitboxupdate(v)
+				end
+			end
 		end
-	end
+		else
+			_G.Hitboxes = false
+		end
+end
 })
 
 HitboxSection:AddColorpicker({
@@ -505,20 +620,20 @@ HitboxSection:AddColorpicker({
 	Default = Color3.fromRGB(0, 0, 255),
 	Callback = function(colorpicked)
 		_G.HitboxColor = colorpicked
-	end	  
+	end
 })
 
 HitboxSection:AddSlider({
 	Name = "Hitbox Size",
 	Min = 3,
 	Max = 200,
-	Default = 20,
+	Default = 5,
 	Color = Color3.fromRGB(255,255,255),
 	Increment = 1,
 	ValueName = "Size",
 	Callback = function(hsize)
 		_G.HitboxSize = hsize
-	end    
+	end
 })
 
 game:GetService("Players").LocalPlayer.Idled:connect(function()
@@ -588,6 +703,91 @@ Universal:AddButton({
 	end
 })
 
+local bp = nil
+local cam = game:GetService("Workspace").CurrentCamera
+local mouse = plr:GetMouse()
+		_G.teams = false
+		local function WTSP(object)
+			local objectvector = cam:WorldToScreenPoint(object.Position)
+			return Vector2.new(objectvector.X, objectvector.Y)
+		end		
+		local function postoray(origin, target)
+			return Ray.new(origin, (target - origin).Unit * 600)
+		end
+		local function filter(object)
+			if string.find(object.Name, "Gun") then
+				return
+			end
+			if object:IsA("Part") or object:IsA("MeshPart") then
+				return true
+			end
+		end
+		local function mousepostovector2()
+			return Vector2.new(mouse.X, mouse.Y)
+		end
+		local function isonscreen(object)
+			local isonscreen = cam:WorldToScreenPoint(object.Position)
+			return isonscreen
+		end
+		
+		local function getclosestbodypartfromcursor()
+			local closestdistance = math.huge
+			for i,v in next, players:GetPlayers() do
+				if _G.teams == true then
+				if v ~= plr and v.Team ~= plr.Team and v.Character and v.Character:FindFirstChild("Humanoid") then
+					for x, d in next, v.Character:GetChildren() do
+						if filter(d) and isonscreen(d) then
+							local distance = (WTSP(d) - mousepostovector2()).Magnitude
+							if distance < closestdistance then
+								closestdistance = distance
+								bp = d
+							end
+						end
+					end
+				end
+			elseif _G.teams == false then
+				if v ~= plr and v.Character and v.Character:FindFirstChild("Humanoid") then
+					for x, d in next, v.Character:GetChildren() do
+						if filter(d) and isonscreen(d) then
+							local distance = (WTSP(d) - mousepostovector2()).Magnitude
+							if distance < closestdistance then
+								closestdistance = distance
+								bp = d
+							end
+						end
+					end
+				end
+			end
+		end
+		end
+		
+		local oldnamecall;
+		oldnamecall = hookmetamethod(game, "__namecall", function(Self, ...)
+			local Method = getnamecallmethod()
+			local Args = {...}
+			if Method == "FindPartOnRayWithIgnoreList" and bp ~= nil then
+				Args[1] = postoray(cam.CFrame.Position, bp.Position)
+				return oldnamecall(Self, unpack(Args))
+			end
+			return oldnamecall(Self, ...)
+		end)
+		
+
+Universal:AddButton({
+	Name = "Univesal Silent Aim",
+	Callback = function()
+		rs:BindToRenderStep("binwonk silent aim", 120, getclosestbodypartfromcursor)
+	end
+})
+
+Universal:AddToggle({
+	Name = "Silent Aim Teams Toggle",
+	Default = false,
+	Callback = function(toggle)
+		_G.teams = toggle
+	end
+})
+
 Universal:AddButton({
 	Name = "Check Version",
 	Callback = function()
@@ -619,6 +819,8 @@ Universal:AddButton({
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/binwonk/BINSPLOIT/main/binsploit.lua"))()
 	end
 })
+
+
 
 local ROWizard = BINSPLOIT:MakeTab({
 	Name = "RO-Wizard",
@@ -914,10 +1116,40 @@ TOH:AddButton({
 	end
 })
 
+local ARSENAL = BINSPLOIT:MakeTab({
+	Name = "Arsenal",
+	Icon = "rbxassetid://44833b45998",
+	PremiumOnly = false
+})
+
+ARSENAL:AddButton({
+	Name = "Infinite Ammo",
+	Callback = function()
+		game:GetService('RunService').Stepped:connect(function()
+		game:GetService("Players").LocalPlayer.PlayerGui.GUI.Client.Variables.ammocount.Value = 999
+		game:GetService("Players").LocalPlayer.PlayerGui.GUI.Client.Variables.ammocount2.Value = 999
+		end)
+	end
+})
+
+ARSENAL:AddButton({
+	Name = "Wallbang",
+	Callback = function()
+	local mt = getrawmetatable(game)
+	local oldindex = mt.__index
+	setreadonly(mt, false)
+	mt.__index = newcclosure(function(A, B)
+    if B == "Clips" then
+    return workspace.Map
+    end
+    return oldindex(A, B)
+	end)
+	end
+})
 
 local OtherScripts = BINSPLOIT:MakeTab({
 	Name = "Other Scripts",
-	Icon = "rbxassetid://4483345998",
+	Icon = "rbxassetid://44833b45998",
 	PremiumOnly = false
 })
 
@@ -927,5 +1159,9 @@ OtherScripts:AddButton({
 		loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
 	end
 })
+
+game.Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(onjoin)
+end)
 
 OrionLib:Init()
