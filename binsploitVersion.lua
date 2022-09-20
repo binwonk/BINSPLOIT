@@ -1,1 +1,1 @@
-_G.CurrentVersion = "v1.0.01"
+_G.CurrentVersion = "v1.0.02"
