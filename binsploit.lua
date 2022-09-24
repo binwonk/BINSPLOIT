@@ -1,4 +1,4 @@
-local ScriptVersion = "v1.0.02"
+local ScriptVersion = "v1.0.03"
 
 _G.ESPEnabled = false
 _G.ChatSpam = false
@@ -13,6 +13,7 @@ _G.LagswitchStatus = false
 _G.ROWizHoopAutofarm = false
 _G.ROWizPotionAutofarm = false
 _G.Noclip = false
+_G.InfiniteJump = false
 
 
 
@@ -96,8 +97,9 @@ end
 
 _G.plrCFrame = nil
 
-local function addOutline(player)
-	local Highlight = Instance.new("Highlight", folder)
+local function updateESP(player)
+    if _G.ESPEnabled == true then
+    local Highlight = Instance.new("Highlight", folder)
 	Highlight.OutlineColor = outlinecoloring
 	Highlight.Adornee = player
 
@@ -107,6 +109,7 @@ local function addOutline(player)
 	else
 		Highlight.FillTransparency = 1
 	end
+    end
 end
 
 local function AddNameTag(player)
@@ -114,14 +117,7 @@ end
 
 game:GetService("Players").PlayerAdded:Connect(function(p)
 	p.CharacterAdded:Connect(function(c)
-		if _G.ESPEnabled == true then
-		if outlines == true then
-			addOutline(c)
-		end
-		if nametags == true then
-			AddNameTag(c)
-		end
-	end
+		updateESP(c)
 	end)
 end)
 
@@ -279,20 +275,10 @@ ESPSection:AddButton({
 		for i,v in pairs(players:GetPlayers()) do
 			if v ~= players.LocalPlayer then
 				v.CharacterAdded:Connect(function(Character)
-					if outlines == true then
-						addOutline(Character)
-					end
-					if nametags == true then
-						AddNameTag(Character)
-					end
+					updateESP(Character)
 				end)
 				if v.Character then
-					if outlines == true then
-						addOutline(v.Character)
-					end
-					if nametags == true then
-						AddNameTag(v.Character)
-					end
+					updateESP(v.Character)
 				end
 			end
 		end
@@ -323,12 +309,17 @@ Universal:AddToggle({
 	end
 })
 
-Universal:AddButton({
-	Name = "Infinite Jump (toggle later)",
-	Callback = function()
-		game:GetService("UserInputService").JumpRequest:connect(function()
-			plr.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-		end)
+mouse.KeyDown:Connect(function(Key)
+	if _G.InfiniteJump == true and Key == " " then
+		players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState(3)
+	end
+end)
+
+Universal:AddToggle({
+	Name = "Infinite Jump",
+	Default = false,
+	Callback = function(infjump)
+		_G.InfiniteJump = infjump
 	end
 })
 
@@ -360,6 +351,29 @@ Universal:AddToggle({
 	Default = false,
 	Callback = function(freeze)
 		plr.Character.HumanoidRootPart.Anchored = freeze
+	end
+})
+
+local function clipno()
+	while _G.Noclip do
+		for i,v in pairs(plr.Character:GetDescendants()) do
+			pcall(function()
+				if v:IsA("BasePart") then
+					v.CanCollide = false
+				end
+			end)
+		end
+		game:GetService("RunService").Stepped:wait()
+	end
+end
+
+
+Universal:AddToggle({
+	Name = "Noclip",
+	Default = false,
+	Callback = function(noclip)
+		_G.Noclip = noclip
+		clipno()
 	end
 })
 
@@ -1144,6 +1158,50 @@ ARSENAL:AddButton({
     end
     return oldindex(A, B)
 	end)
+	end
+})
+
+ARSENAL:AddButton({
+	Name = "FireRate",
+	Callback = function()
+		for i,v in pairs(game:GetService("ReplicatedStorage").Weapons:GetDescendants()) do
+			if v.Name == "FireRate" then
+				v.Value = 0.02
+			end
+		end
+	end
+})
+
+ARSENAL:AddButton({
+	Name = "Always Auto",
+	Callback = function()
+		for i,v in pairs(game:GetService("ReplicatedStorage").Weapons:GetDescendants()) do
+			if v.Name == "Auto" then
+				v.Value = true
+			end
+		end
+	end
+})
+
+ARSENAL:AddButton({
+	Name = "No Recoil",
+	Callback = function()
+		for i,v in pairs(game:GetService("ReplicatedStorage").Weapons:GetDescendants()) do
+			if v.Name == "MaxSpread" or v.Name == "Spread" or v.Name == "RecoilControl" then
+				v.Value = 0
+			end
+		end
+	end
+})
+
+ARSENAL:AddButton({
+	Name = "No Equip Time",
+	Callback = function()
+		for i,v in pairs(game:GetService("ReplicatedStorage").Weapons:GetDescendants()) do
+			if v.Name == "EquipTime" then
+				v.Value = 0
+			end
+		end
 	end
 })
 
