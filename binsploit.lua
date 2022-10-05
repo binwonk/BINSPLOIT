@@ -1,4 +1,4 @@
-local ScriptVersion = "v1.0.03"
+local ScriptVersion = "v1.0.04"
 
 _G.ESPEnabled = false
 _G.ChatSpam = false
@@ -54,39 +54,41 @@ local vim = game:GetService("VirtualInputManager")
 local uis = game:GetService("UserInputService")
 local vu = game:GetService("VirtualUser")
 
+local inc = {Unlocked = true, Id = 4}
 
 local mouse = plr:GetMouse()
 
 
 if game.PlaceId == 3082707367 then
-_G.ROWizardSpells = require(game.ReplicatedStorage.Modules.Spell)
+		_G.ROWizardSpells = require(game.ReplicatedStorage.Modules.Spell)
 
-_G.ROWizardwands = {}
+		_G.ROWizardwands = {}
 
-_G.ROWizardwandModule = require(game.ReplicatedStorage.Modules.Wand)
+		_G.ROWizardwandModule = require(game.ReplicatedStorage.Modules.Wand)
 
-_G.ROWizardOutfits = {}
+		_G.ROWizardOutfits = {}
 
-_G.ROWizardoutfitsModule = require(game.ReplicatedStorage.Modules.Outfits)
+		_G.ROWizardoutfitsModule = require(game.ReplicatedStorage.Modules.Outfits)
 
-_G.ROWizardBrooms = {}
+		_G.ROWizardBrooms = {}
 
-_G.ROWizardBroomModule = require(game.ReplicatedStorage.Modules.Broomstick)
+		_G.ROWizardBroomModule = require(game.ReplicatedStorage.Modules.Broomstick)
 
-for i,v in pairs(_G.ROWizardoutfitsModule.Outfits) do
-	table.insert(_G.ROWizardOutfits, v.Name)
-end
+		for i,v in pairs(_G.ROWizardoutfitsModule.Outfits) do
+			table.insert(_G.ROWizardOutfits, v.Name)
+		end
 
-for i,v in pairs(_G.ROWizardwandModule.Wands) do
-	table.insert(_G.ROWizardwands, v.Name)
-end
+		for i,v in pairs(_G.ROWizardwandModule.Wands) do
+			table.insert(_G.ROWizardwands, v.Name)
+		end
 
-for i,v in pairs(_G.ROWizardBroomModule.Brooms) do
-	table.insert(_G.ROWizardBrooms, v.Name)
-end
+		for i,v in pairs(_G.ROWizardBroomModule.Brooms) do
+			table.insert(_G.ROWizardBrooms, v.Name)
+		end
 
-ROWizardShake = require(game.ReplicatedStorage.Modules.CameraShaker)
+		ROWizardShake = require(game.ReplicatedStorage.Modules.CameraShaker)
 
+		ROWizardRequire = require(game:GetService("ReplicatedStorage").Modules.PlayerData)
 end
 
 if game.PlaceId ~= 286090429 then
@@ -354,6 +356,22 @@ Universal:AddToggle({
 	end
 })
 
+Universal:AddButton({
+	Name = "Client-Sided BTools",
+	Callback = function()
+		local tool1 = Instance.new("HopperBin",game.Players.LocalPlayer.Backpack)
+		local tool2 = Instance.new("HopperBin",game.Players.LocalPlayer.Backpack)
+		local tool3 = Instance.new("HopperBin",game.Players.LocalPlayer.Backpack)
+		local tool4 = Instance.new("HopperBin",game.Players.LocalPlayer.Backpack)
+		local tool5 = Instance.new("HopperBin",game.Players.LocalPlayer.Backpack)
+		tool1.BinType = "Clone"
+		tool2.BinType = "GameTool"
+		tool3.BinType = "Hammer"
+		tool4.BinType = "Script"
+		tool5.BinType = "Grab"
+	end
+})
+
 local function clipno()
 	while _G.Noclip do
 		for i,v in pairs(plr.Character:GetDescendants()) do
@@ -557,10 +575,10 @@ function hitboxupdate(player)
 			end ]]
 			--[[ player.Character.HumanoidRootPart.Size = Vector3.new(size,size,size)
 			player.Character.HumanoidRootPart.Transparency = isVisible ]]
-	else
+		else
 			--[[ player.Character.LowerTorso.Size = originalSizes.LowerTorso
 			player.Character.HumanoidRootPart.Size = originalSizes.HumanoidRootPart ]]
-	end
+		end
 else
 	if _G.Hitboxes and player ~= plr and (player.Character:FindFirstChild("HumanoidRootPart") or player.Character:WaitForChild("HumanoidRootPart")) then
 		player.Character.HumanoidRootPart.Size = Vector3.new(_G.HitboxSize, _G.HitboxSize, _G.HitboxSize)
@@ -569,11 +587,13 @@ else
 		player.Character.HumanoidRootPart.Material = "Neon"
 		player.Character.HumanoidRootPart.CanCollide = false
 	else
+		if player ~= plr and (player.Character:WaitForChild("HumanoidRootPart") or player.Character:FindFirstChild("HumanoidRootPart")) then
 		player.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
 		player.Character.HumanoidRootPart.Transparency = 1
 		player.Character.HumanoidRootPart.BrickColor = BrickColor.new("Medium stone grey")
 		player.Character.HumanoidRootPart.Material = "Plastic"
 		player.Character.HumanoidRootPart.CanCollide = true
+		end
 	end
 end
 end
@@ -703,6 +723,8 @@ Universal:AddTextbox({
 		for i,v in pairs(game.Players:GetChildren()) do
 			if (string.sub(string.lower(v.Name), 1, string.len(PlayerGoto))) == string.lower(PlayerGoto) then
 				GotoPlayer = v.Name
+			elseif (string.sub(string.lower(v.DisplayName), 1, string.len(PlayerGoto))) == string.lower(PlayerGoto) then
+				GotoPlayer = v.Name
 			end
 		end
 		plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[GotoPlayer].Character.HumanoidRootPart.Position)
@@ -802,6 +824,42 @@ Universal:AddToggle({
 	end
 })
 
+Universal:AddTextbox({
+	Name = "View Player",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(playerToView)
+		for i,v in pairs(game.Players:GetChildren()) do
+			if (string.sub(string.lower(v.Name), 1, string.len(playerToView))) == string.lower(playerToView) then
+				playerToView = v.Name
+			elseif (string.sub(string.lower(v.DisplayName), 1, string.len(playerToView))) == string.lower(playerToView) then
+				playerToView = v.Name
+			end
+		end
+			game:GetService("Workspace").CurrentCamera.CameraSubject = game.Players[playerToView].Character.Humanoid
+		end
+})
+
+Universal:AddButton({
+	Name = "Unview",
+	Callback = function()
+		game:GetService("Workspace").CurrentCamera.CameraSubject = plr.Character.Humanoid
+	end
+})
+
+Universal:AddSlider({
+	Name = "Field Of View",
+	Min = 1,
+	Max = 120,
+	Default = 70,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "FOV",
+	Callback = function(fovamount)
+		game:GetService("Workspace").Camera.FieldOfView = fovamount
+	end
+})
+
 Universal:AddButton({
 	Name = "Check Version",
 	Callback = function()
@@ -843,15 +901,15 @@ local ROWizard = BINSPLOIT:MakeTab({
 })
 
 ROWizard:AddToggle({
-	Name = "Hoop Autofarm (buggy)",
+	Name = "Hoop Autofarm",
 	Default = false,
 	Callback = function(RoWizardHoopStatus)
 		_G.ROWizHoopAutofarm = RoWizardHoopStatus
-		while _G.ROWizHoopAutofarm == true do
+		while _G.ROWizHoopAutofarm == true and wait() do
 			for i,v in pairs(game:GetService("Workspace").Effects:GetChildren()) do
 				if v.Name == "Hoop" then
 				firetouchinterest(plr.Character.HumanoidRootPart, v, 0)
-				game:GetService("RunService").RenderStepped:wait()
+				wait()
 				firetouchinterest(plr.Character.HumanoidRootPart, v, 1)
 				wait()
 				end
@@ -860,7 +918,7 @@ ROWizard:AddToggle({
 end})
 
 ROWizard:AddToggle({
-	Name = "Potion Autofarm (buggy)",
+	Name = "Potion Autofarm",
 	Default = false,
 	Callback = function(RoWizardPotionStatus)
 		_G.ROWizPotionAutofarm = RoWizardPotionStatus
@@ -1001,79 +1059,14 @@ ROWizard:AddDropdown({
 	end
 })
 
-ROWizard:AddDropdown({
-	Name = "Buy Wand (Requires 1 Gem)",
-	Default = "",
-	Options = _G.ROWizardwands,
+ROWizard:AddButton({
+	Name = "Free Store (Requires 1 Gem)",
 	Callback = function(wand)
-		local args = {
-			[1] = "Buy",
-			[2] = {
-				["Data"] = {
-					["Type"] = "Wand",
-					["Rarity"] = "Common",
-					["Gems"] = 0.000000001,
-					["Owner"] = game:GetService("Players").LocalPlayer,
-					["LastFired"] = {},
-					["Name"] = wand,
-					["Logs"] = {},
-					["IdleAnimation"] = "WandIdle2"
-				},
-				["Type"] = "Gems"
-			}
-		}
-
-		game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
-	end
-})
-
-ROWizard:AddDropdown({
-	Name = "Buy Outfit (Requires 1 gem)",
-	Default = "",
-	Options = _G.ROWizardOutfits,
-	Callback = function(outfit)
-		local args = {
-			[1] = "Buy",
-			[2] = {
-				["Data"] = {
-					["HouseColor"] = true,
-					["Name"] = outfit,
-					["Owner"] = game:GetService("Players").LocalPlayer,
-					["OutfitName"] = "ScarfUniform",
-					["Gems"] = 0.000000001,
-					["Type"] = "Outfit",
-					["Rarity"] = "Common"
-				},
-				["Type"] = "Gems"
-			}
-		}
-		game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
-	end
-})
-
-ROWizard:AddDropdown({
-	Name = "Buy Broom (Requires 1 Gem)",
-	Default = "",
-	Options = _G.ROWizardBrooms,
-	Callback = function(broom)
-		local args = {
-			[1] = "Buy",
-			[2] = {
-				["Data"] = {
-					["Type"] = "Broom",
-					["Rarity"] = "Rare",
-					["Active"] = true,
-					["Gems"] = 0.000000001,
-					["Handling"] = 20,
-					["Name"] = broom,
-					["Speed"] = 120,
-					["Points"] = 200,
-					["Owner"] = game:GetService("Players").LocalPlayer
-				},
-				["Type"] = "Gems"
-			}
-		}
-		game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+		for i,v in pairs(getgc(true)) do
+			if type(v) == "table" and rawget(v, "Gems") and rawget(v, "Rarity") then
+				v.Gems = 0.00000001
+			end
+		end
 	end
 })
 
@@ -1086,6 +1079,8 @@ ROWizard:AddTextbox({
 	Callback = function(KillPlayer)
 		for i,v in pairs(game.Players:GetChildren()) do
 			if (string.sub(string.lower(v.Name), 1, string.len(KillPlayer))) == string.lower(KillPlayer) then
+				targetplr = v.Name
+			elseif (string.sub(string.lower(v.DisplayName), 1, string.len(KillPlayer))) == string.lower(KillPlayer) then
 				targetplr = v.Name
 			end
 		end
@@ -1103,6 +1098,54 @@ ROWizard:AddTextbox({
 			}
 			game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
 		end
+	end
+})
+
+ROWizard:AddButton({
+	Name = "Crash Server (Instructions pinned in #script) (By Pyronym)",
+	Callback = function()
+		local settings = {repeatamount = 40, exceptions = {"SayMessageRequest"}}
+		local mt = getrawmetatable(game)
+		local old = mt.__namecall
+		setreadonly(mt, false)
+		mt.__namecall = function(uh, ...)
+		local args = {...}
+		local method = getnamecallmethod()
+		for i,o in next, settings.exceptions do
+			if uh.Name == o then
+				return old(uh, ...)
+			end
+		end
+		if method == "FireServer" or method == "InvokeServer" then
+			for i = 1,settings.repeatamount do
+				old(uh, ...)
+			end
+		end
+		return old(uh, ...)
+		end
+		setreadonly(mt, true)
+		wait()
+		plr.Character.HumanoidRootPart.CFrame = CFrame.new(223.696793, -58.3355598, 273.00885, -0.986537039, -1.96597085e-08, 0.163538069, -7.10815984e-09, 1, 7.733518e-08, -0.163538069, 7.51315667e-08, -0.986537039)
+		
+	end
+})
+
+local incendi;
+
+ROWizard:AddButton({
+	Name = "Get Incendio (re-execute when you rejoin the game)",
+	Callback = function()
+		incendi = hookfunction(ROWizardRequire.Reconstruct, function(...)
+			args = ...
+			if args["Id"] == game.Players.LocalPlayer.UserId then
+				table.insert(args["KnownSpells"], inc)
+			end
+			return(incendi(args))
+		end)
+		local args = {[1] = "ToggleSetting", [2] = "OutfitHats"}
+		game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+		local args = {[1] = "ToggleSetting",[2] = "OutfitHats"}
+		game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
 	end
 })
 
