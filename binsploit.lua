@@ -1,4 +1,4 @@
-local ScriptVersion = "v1.0.04"
+local ScriptVersion = "v1.0.05"
 
 _G.ESPEnabled = false
 _G.ChatSpam = false
@@ -14,6 +14,7 @@ _G.ROWizHoopAutofarm = false
 _G.ROWizPotionAutofarm = false
 _G.Noclip = false
 _G.InfiniteJump = false
+_G.AntiKick = false
 
 
 
@@ -25,7 +26,6 @@ local outlinecoloring = Color3.fromRGB(255, 17, 0)
 local outlinefill = true
 local fillopacity = 0.7
 local fillcoloring = Color3.fromRGB(255, 17, 0)
-local players = game.Players
 local nametags = true
 local textfont = Enum.Font.RobotoMono
 local namecolor = Color3.fromRGB(255, 255, 255)
@@ -35,6 +35,8 @@ local ts = game:GetService("TeleportService")
 
 local players = game:GetService("Players")
 local plr = game.Players.LocalPlayer
+local chr = plr.Character
+local hum = chr.Humanoid
 
 local rs = game:GetService("RunService")
 
@@ -48,13 +50,15 @@ local folder = Instance.new("Folder", game:GetService("CoreGui"))
 folder.Name = ""
 
 local cdelay = 1
-local chatmessage = "Use Binsploit V4 // .gg/4PUwnJ46yj"
+local chatmessages = {"Use Binsploit V4 today! // .gg/4PUwnJ46yj", "Did you know Binsploit V4 raises your IQ by math.huge? // .gg/4PUwnJ46yj", "This message has been hacked by Binsploit V4 // .gg/4PUwnJ46yj"}
+local chatmessage1 = math.random(1, #chatmessages)
+local chatmessage = chatmessages[chatmessage1]
 
 local vim = game:GetService("VirtualInputManager")
 local uis = game:GetService("UserInputService")
 local vu = game:GetService("VirtualUser")
 
-local inc = {Unlocked = true, Id = 4}
+local inc = {Unlocked = false, Id = 4}
 
 local mouse = plr:GetMouse()
 
@@ -104,17 +108,17 @@ local function updateESP(player)
     local Highlight = Instance.new("Highlight", folder)
 	Highlight.OutlineColor = outlinecoloring
 	Highlight.Adornee = player
-
 	if outlinefill == true then
 		Highlight.FillColor = fillcoloring
 		Highlight.FillTransparency = fillopacity
 	else
 		Highlight.FillTransparency = 1
 	end
-    end
-end
-
-local function AddNameTag(player)
+	else
+		for i,v in pairs(folder:GetChildren()) do
+			v:Destroy()
+		end
+	end
 end
 
 game:GetService("Players").PlayerAdded:Connect(function(p)
@@ -143,11 +147,13 @@ setreadonly(mt, false)
 mt.__namecall = newcclosure(function(self, ...)
   	local args = {...}
 	local method = getnamecallmethod()
- 
+	
+	if _G.AntiKick == true then
 	if method == "Kick" or method == "kick" then
 	kickAttempt(self, args[1])
     return
     end
+	end
 
     return old(self, ...)
 end)
@@ -163,6 +169,14 @@ if game.PlaceId == 1962086868 then
 end
 
 wait(0.1)
+
+local function presskey(key)
+    vim:SendKeyEvent(true, key, false, game)
+end
+
+local function releasekey(key)
+    vim:SendKeyEvent(false, key, false, game)
+end
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
@@ -270,10 +284,11 @@ local ESPSection = Universal:AddSection({
 	Name = "ESP"
 })
 
-ESPSection:AddButton({
+ESPSection:AddToggle({
 	Name = "ESP (uses highlights) (sometimes doenst work)",
-	Callback = function()
-		_G.ESPEnabled = true
+	Default = false,
+	Callback = function(ESP)
+		_G.ESPEnabled = ESP
 		for i,v in pairs(players:GetPlayers()) do
 			if v ~= players.LocalPlayer then
 				v.CharacterAdded:Connect(function(Character)
@@ -300,14 +315,6 @@ ESPSection:AddColorpicker({
 	Default = fillcoloring,
 	Callback = function(maongus)
 		fillcoloring = maongus
-	end
-})
-
-Universal:AddToggle({
-	Name = "makes your screen blurry and shit",
-	Default = false,
-	Callback = function(blur)
-		game:GetService("RunService"):SetRobloxGuiFocused(blur)
 	end
 })
 
@@ -372,6 +379,72 @@ Universal:AddButton({
 	end
 })
 
+Universal:AddButton({
+	Name = "Ball (skidded)",
+	Callback = function()
+		local UserInputService = game:GetService("UserInputService")
+		local RunService = game:GetService("RunService")
+        local Camera = workspace.CurrentCamera
+                
+        local SPEED_MULTIPLIER = 30
+        local JUMP_POWER = 60
+        local JUMP_GAP = 0.3
+                
+        local character = game.Players.LocalPlayer.Character
+        
+        for i,v in ipairs(character:GetDescendants()) do
+        if v:IsA("BasePart") then
+        v.CanCollide = false
+        end
+        end
+        
+        local ball = character.HumanoidRootPart
+        ball.Shape = Enum.PartType.Ball
+        ball.Size = Vector3.new(5,5,5)
+        local humanoid = character:WaitForChild("Humanoid")
+        local params = RaycastParams.new()
+        params.FilterType = Enum.RaycastFilterType.Blacklist
+        params.FilterDescendantsInstances = {character}
+        
+        local tc = RunService.RenderStepped:Connect(function(delta)
+        ball.CanCollide = true
+        humanoid.PlatformStand = true
+        if UserInputService:GetFocusedTextBox() then return end
+        if UserInputService:IsKeyDown("W") then
+        ball.RotVelocity -= Camera.CFrame.RightVector * delta * SPEED_MULTIPLIER
+        end
+        if UserInputService:IsKeyDown("A") then
+        ball.RotVelocity -= Camera.CFrame.LookVector * delta * SPEED_MULTIPLIER
+        end
+        if UserInputService:IsKeyDown("S") then
+        ball.RotVelocity += Camera.CFrame.RightVector * delta * SPEED_MULTIPLIER
+        end
+        if UserInputService:IsKeyDown("D") then
+        ball.RotVelocity += Camera.CFrame.LookVector * delta * SPEED_MULTIPLIER
+        end
+        --ball.RotVelocity = ball.RotVelocity - Vector3.new(0,ball.RotVelocity.Y/50,0)
+        end)
+               
+        UserInputService.JumpRequest:Connect(function()
+        local result = workspace:Raycast(
+        ball.Position,
+        Vector3.new(
+        0,
+        -((ball.Size.Y/2)+JUMP_GAP),
+        0
+        ),
+        params
+        )
+        if result then
+        ball.Velocity = ball.Velocity + Vector3.new(0,JUMP_POWER,0)
+        end
+        end)
+        
+        Camera.CameraSubject = ball
+        humanoid.Died:Connect(function() tc:Disconnect() end)
+	end
+})
+
 local function clipno()
 	while _G.Noclip do
 		for i,v in pairs(plr.Character:GetDescendants()) do
@@ -395,6 +468,152 @@ Universal:AddToggle({
 	end
 })
 
+_G.Speed = 5
+
+Universal:AddToggle({
+	Name = "Fly (skidded)",
+	Default = false,
+	Callback = function(flystatus)
+		getgenv().Fly = flystatus
+		local Max = 0
+		local Players = game:GetService("Players")
+		local LP = Players.LocalPlayer
+		local Mouse = LP:GetMouse()
+		Max = Max + 1
+		if Fly then
+		local T =
+			LP.Character:FindFirstChildWhichIsA("Humanoid").RigType == Enum.HumanoidRigType.R6 and
+			LP.Character:FindFirstChild("HumanoidRootPart") or
+			LP.Character:FindFirstChildWhichIsA("Humanoid").RigType == Enum.HumanoidRigType.R15 and
+				LP.Character:FindFirstChild("UpperTorso")
+		local S = {
+			F = 0,
+			B = 0,
+			L = 0,
+			R = 0
+		}
+		local S2 = {
+			F = 0,
+			B = 0,
+			L = 0,
+			R = 0
+		}
+		local SPEED = _G.Speed
+		local function FLY()
+			local BodyGyro = Instance.new("BodyGyro", T)
+			local BodyVelocity = Instance.new("BodyVelocity", T)
+			BodyGyro.P = 9e4
+			BodyGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+			BodyGyro.cframe = T.CFrame
+			BodyVelocity.velocity = Vector3.new(0, 0.1, 0)
+			BodyVelocity.maxForce = Vector3.new(9e9, 9e9, 9e9)
+			spawn(
+				function()
+					repeat
+						wait()
+						LP.Character.Humanoid.PlatformStand = true
+						if S.L + S.R ~= 0 or S.F + S.B ~= 0 then
+							SPEED = _G.Speed + 100
+						elseif not (S.L + S.R ~= 0 or S.F + S.B ~= 0) and SPEED ~= 0 then
+							SPEED = 0
+						end
+						if (S.L + S.R) ~= 0 or (S.F + S.B) ~= 0 then
+							BodyVelocity.velocity =
+								((game:GetService("Workspace").CurrentCamera.CoordinateFrame.lookVector * (S.F + S.B)) +
+								((game:GetService("Workspace").CurrentCamera.CoordinateFrame *
+									CFrame.new(S.L + S.R, (S.F + S.B) * 0.2, 0).p) -
+									game:GetService("Workspace").CurrentCamera.CoordinateFrame.p)) *
+								SPEED
+							S2 = {
+								F = S.F,
+								B = S.B,
+								L = S.L,
+								R = S.R
+							}
+						elseif (S.L + S.R) == 0 and (S.F + S.B) == 0 and SPEED ~= 0 then
+							BodyVelocity.velocity =
+								((game:GetService("Workspace").CurrentCamera.CoordinateFrame.lookVector * (S2.F + S2.B)) +
+								((game:GetService("Workspace").CurrentCamera.CoordinateFrame *
+									CFrame.new(S2.L + S2.R, (S2.F + S2.B) * 0.2, 0).p) -
+									game:GetService("Workspace").CurrentCamera.CoordinateFrame.p)) *
+								SPEED
+						else
+							BodyVelocity.velocity = Vector3.new(0, 0.1, 0)
+						end
+						BodyGyro.cframe = game:GetService("Workspace").CurrentCamera.CoordinateFrame
+					until not Fly
+					S = {
+						F = 0,
+						B = 0,
+						L = 0,
+						R = 0
+					}
+					S2 = {
+						F = 0,
+						B = 0,
+						L = 0,
+						R = 0
+					}
+					SPEED = 0
+					BodyGyro:destroy()
+					BodyVelocity:destroy()
+					LP.Character.Humanoid.PlatformStand = false
+				end
+			)
+		end
+		Mouse.KeyDown:connect(
+			function(k)
+				if k:lower() == "w" then
+					S.F = 1
+				elseif k:lower() == "s" then
+					S.B = -1
+				elseif k:lower() == "a" then
+					S.L = -1
+				elseif k:lower() == "d" then
+					S.R = 1
+				end
+			end
+		)
+		Mouse.KeyUp:connect(
+			function(k)
+				if k:lower() == "w" then
+					S.F = 0
+				elseif k:lower() == "s" then
+					S.B = 0
+				elseif k:lower() == "a" then
+					S.L = 0
+				elseif k:lower() == "d" then
+					S.R = 0
+				end
+			end
+		)
+		if Fly then
+			FLY()
+		end
+		if not Fly then
+			FLY()
+		end
+		if Max == 2 then
+			Fly = false
+			Max = 0
+		end
+		end
+	end
+})
+
+Universal:AddSlider({
+	Name = "Fly Speed",
+	Min = 0,
+	Max = 1000,
+	Default = 5,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "Speed",
+	Callback = function(fs)
+		_G.Speed = fs
+	end    
+})
+
 Universal:AddTextbox({
 	Name = "Chat Spam Message",
 	Default = "Message Here",
@@ -410,7 +629,7 @@ Universal:AddTextbox({
 	end
 })
 
-chatmessage = "Use Binsploit V4 Today! .gg/4PUwnJ46yj"
+chatmessage = chatmessages[chatmessage1]
 
 Universal:AddTextbox({
 	Name = "Chat Spam Delay",
@@ -727,7 +946,7 @@ Universal:AddTextbox({
 				GotoPlayer = v.Name
 			end
 		end
-		plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[GotoPlayer].Character.HumanoidRootPart.Position)
+		plr.Character.HumanoidRootPart.CFrame = game.Players[GotoPlayer].Character.HumanoidRootPart.CFrame
 	end
 })
 
@@ -807,7 +1026,6 @@ local mouse = plr:GetMouse()
 			end
 			return oldnamecall(Self, ...)
 		end)
-		
 
 Universal:AddButton({
 	Name = "Univesal Silent Aim",
@@ -892,6 +1110,19 @@ Universal:AddButton({
 	end
 })
 
+Universal:AddButton({
+	Name = "Join Discord (sets clipboard to discord invite)",
+	Callback = function()
+		setclipboard("https://discord.gg/4PUwnJ46yj")
+		OrionLib:MakeNotification({
+			Name = "yes",
+			Content = "Copied server invite!",
+			Image = "rbxassetid://4483345998",
+			Time = 5
+		})
+	end
+})
+
 
 
 local ROWizard = BINSPLOIT:MakeTab({
@@ -906,12 +1137,12 @@ ROWizard:AddToggle({
 	Callback = function(RoWizardHoopStatus)
 		_G.ROWizHoopAutofarm = RoWizardHoopStatus
 		while _G.ROWizHoopAutofarm == true and wait() do
+			CFRAME_SET = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
 			for i,v in pairs(game:GetService("Workspace").Effects:GetChildren()) do
 				if v.Name == "Hoop" then
-				firetouchinterest(plr.Character.HumanoidRootPart, v, 0)
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
 				wait()
-				firetouchinterest(plr.Character.HumanoidRootPart, v, 1)
-				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFRAME_SET
 				end
 			end
 		end
@@ -941,7 +1172,6 @@ ROWizard:AddDropdown({
 			[1] = "ChangeHouse",
 			[2] = house
 		}
-
 		game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
 		wait(1)
 		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFRAME_SET
@@ -949,7 +1179,7 @@ ROWizard:AddDropdown({
 })
 
 ROWizard:AddButton({
-	Name = "Mod Wand (BETTER THAN BLISSFUL)",
+	Name = "Mod Wand",
 	Callback = function()
 		for i,v in pairs(_G.ROWizardSpells.Spells) do
 			v.MaxCharges = 10000
@@ -1101,6 +1331,21 @@ ROWizard:AddTextbox({
 	end
 })
 
+local function crashWalk()
+	while wait() do
+		hum.WalkToPoint = Vector3.new(223.2034454345703, -57.915584564208984, 281.34619140625)
+		wait(0.1)
+		hum.WalkToPoint = Vector3.new(223.96920776367188, -58.33555221557617, 272.5313720703125)
+	end
+end
+local function crashPress()
+	while wait(0.01) do
+		presskey(Enum.KeyCode.E)
+		wait()
+		releasekey(Enum.KeyCode.E)
+	end
+end
+
 ROWizard:AddButton({
 	Name = "Crash Server (Instructions pinned in #script) (By Pyronym)",
 	Callback = function()
@@ -1125,8 +1370,10 @@ ROWizard:AddButton({
 		end
 		setreadonly(mt, true)
 		wait()
-		plr.Character.HumanoidRootPart.CFrame = CFrame.new(223.696793, -58.3355598, 273.00885, -0.986537039, -1.96597085e-08, 0.163538069, -7.10815984e-09, 1, 7.733518e-08, -0.163538069, 7.51315667e-08, -0.986537039)
-		
+		plr.Character.HumanoidRootPart.CFrame = CFrame.new(223.30227661132812, -57.77378845214844, 280.24627685546875)
+		wait(0.1)
+		spawn(crashWalk)
+		spawn(crashPress)
 	end
 })
 
@@ -1135,17 +1382,24 @@ local incendi;
 ROWizard:AddButton({
 	Name = "Get Incendio (re-execute when you rejoin the game)",
 	Callback = function()
-		incendi = hookfunction(ROWizardRequire.Reconstruct, function(...)
-			args = ...
-			if args["Id"] == game.Players.LocalPlayer.UserId then
-				table.insert(args["KnownSpells"], inc)
+		for i,v in pairs(getgc(true)) do
+			if type(v) == "table" and rawget(v, "RPName") then
+				table.insert(v["KnownSpells"], inc)
 			end
-			return(incendi(args))
-		end)
-		local args = {[1] = "ToggleSetting", [2] = "OutfitHats"}
-		game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
-		local args = {[1] = "ToggleSetting",[2] = "OutfitHats"}
-		game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+		end
+	end
+})
+
+ROWizard:AddButton({
+	Name = "Get All Spells (re-execute when you rejoin the game)",
+	Callback = function()
+		for i,v in pairs(getgc(true)) do
+			if type(v) == "table" and rawget(v, "RPName") then
+				for x = 1,100 do
+				table.insert(v["KnownSpells"], {Unlocked = true, Id = x})
+				end
+			end
+		end
 	end
 })
 
@@ -1245,6 +1499,29 @@ ARSENAL:AddButton({
 				v.Value = 0
 			end
 		end
+	end
+})
+
+local bloxfruits = BINSPLOIT:MakeTab({
+	Name = "Blox Fruits",
+	Icon = "rbxassetid://44833b45998",
+	PremiumOnly = false
+})
+
+bloxfruits:AddButton({
+	Name = "Infinite Dodges",
+	Callback = function()
+		local dodges;
+		dodges = hookmetamethod(game, "__namecall", function(self, ...)
+		local args = {...}
+		local method = getnamecallmethod()
+			if not checkcaller() and method == "FireServer" then
+				if args[1] == "Dodge" then
+					args[3] = 0
+				end
+			end
+		return dodges(self, unpack(args))
+		end)
 	end
 })
 
