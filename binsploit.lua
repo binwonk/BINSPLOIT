@@ -11,7 +11,6 @@ _G.HitboxColor = Color3.fromRGB(0, 0, 255)
 _G.AntiAfk = false
 _G.LagswitchStatus = false
 _G.ROWizHoopAutofarm = false
-_G.ROWizPotionAutofarm = false
 _G.Noclip = false
 _G.InfiniteJump = false
 _G.AntiKick = false
@@ -1509,7 +1508,7 @@ local bloxfruits = BINSPLOIT:MakeTab({
 })
 
 bloxfruits:AddButton({
-	Name = "Infinite Dodges",
+	Name = "Infinite Dashes",
 	Callback = function()
 		local dodges;
 		dodges = hookmetamethod(game, "__namecall", function(self, ...)
